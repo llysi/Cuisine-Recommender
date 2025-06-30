@@ -9,14 +9,19 @@
     <h1>Check your refrigerator. What can you create?</h1>
 
     <div style="padding-top:10px">
-    <button onClick="startInference()">What kind of cuisine can you make?</button>
+        <button onClick="startInference()">What kind of cuisine can you make? </button>
+        (Thai, Japanese, Chinese, Indian, Korean)
     </div>
 
     <div id="result" style="margin-top: 20px; font-size: 1.2em; color: green; font-weight: bold;"></div>
 
     <input type="text" id="search" placeholder="Search ingredients..." style="width: 20%; padding: 8px; margin-top: 20px; margin-bottom: 10px;">
-    <button id="clearBtn" style="margin-top: 10px;">Clear all checkboxes</button>
 
+    <div style="padding-top:0px; padding-bottom:10px">
+        <button id="clearBtn" style="margin-top: 10px;">Clear all checkboxes</button>
+        <button id="viewFridgeBtn" style="margin-top: 10px;">View Fridge</button>
+        <div id="fridge" style="margin-top: 10px; display: none; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 5px;"></div>
+    </div>
     <div id="wrapper"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>

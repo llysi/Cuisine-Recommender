@@ -1,12 +1,28 @@
-let allIngredients = []; // Store all ingredients from JSON
-let selectedIngredients = {}; // Store selected ingredient indices
+let allIngredients = [];
+let selectedIngredients = {};
+const ingredients = Array(380).fill(0);
+let session;
 
+// Load the ONNX model
+async function loadModel() {
+  console.log("🔄 Loading ONNX model...");
+  try {
+    session = await ort.InferenceSession.create('./model/model.onnx');
+    console.log("✅ Model loaded successfully!");
+  } catch (e) {
+    console.log("❌ Failed to load model:", e);
+  }
+}
+loadModel();
+
+// Fetch ingredients and render list
 fetch('./ingredients.json')
   .then(response => response.json())
   .then(data => {
     allIngredients = data;
     renderIngredientList(allIngredients);
 
+    // Set up search
     document.getElementById('search').addEventListener('input', function() {
       const keyword = this.value.toLowerCase();
       const filtered = allIngredients.filter(item => item.ingredient.toLowerCase().includes(keyword));
@@ -16,7 +32,7 @@ fetch('./ingredients.json')
 
 function renderIngredientList(list) {
   const wrapper = document.getElementById('wrapper');
-  wrapper.innerHTML = ""; // Clear old checkboxes
+  wrapper.innerHTML = "";
 
   list.forEach(item => {
     const div = document.createElement('div');
@@ -35,27 +51,53 @@ function renderIngredientList(list) {
       selectedIngredients[check.value] = check.checked ? 1 : 0;
     });
   });
-  document.getElementById('clearBtn').addEventListener('click', () => {
-    // Reset all selected ingredients
-    selectedIngredients = {};
-  
-    // Reset ingredients array
-    for (let i = 0; i < ingredients.length; i++) {
-      ingredients[i] = 0;
-    }
-  
-    // Uncheck all currently visible checkboxes
-    const checks = [...document.querySelectorAll('.checkbox')];
-    checks.forEach(check => {
-      check.checked = false;
-    });
-  
-    console.log("✅ All checkboxes cleared!");
-  });
-  
 }
 
-const ingredients = Array(380).fill(0);
+// Clear button logic
+document.getElementById('clearBtn').addEventListener('click', () => {
+  selectedIngredients = {};
+  for (let i = 0; i < ingredients.length; i++) {
+    ingredients[i] = 0;
+  }
+  const checks = [...document.querySelectorAll('.checkbox')];
+  checks.forEach(check => {
+    check.checked = false;
+  });
+
+  // Also hide fridge
+  const fridgeDiv = document.getElementById('fridge');
+  fridgeDiv.style.display = "none";
+  console.log("✅ All checkboxes cleared!");
+});
+
+// View fridge button logic
+document.getElementById('viewFridgeBtn').addEventListener('click', () => {
+  const fridgeDiv = document.getElementById('fridge');
+  const selectedNames = getFridgeContents();
+
+  if (selectedNames.length > 0) {
+    fridgeDiv.innerHTML = "🥕 Your fridge contains: " + selectedNames.join(", ");
+  } else {
+    fridgeDiv.innerHTML = "🥕 Your fridge is empty!";
+  }
+
+  fridgeDiv.style.display = fridgeDiv.style.display === "none" ? "block" : "none";
+});
+
+function getFridgeContents() {
+  const selectedNames = [];
+
+  Object.entries(selectedIngredients).forEach(([index, isSelected]) => {
+    if (isSelected) {
+      const item = allIngredients.find(ing => ing.index == index);
+      if (item) {
+        selectedNames.push(item.ingredient);
+      }
+    }
+  });
+
+  return selectedNames;
+}
 
 function testCheckboxes() {
   return Object.values(selectedIngredients).some(val => val === 1);
@@ -86,22 +128,8 @@ async function startInference() {
     const labelIndex = results.label.data[0];
     const classNames = ["chinese", "indian", "japanese", "korean", "thai"];
     document.getElementById("result").innerText = 'You can enjoy ' + classNames[labelIndex] + ' cuisine today!';
-    console.log("ONNX model loaded successfully");
   } catch (e) {
     console.log("❌ Failed to inference ONNX model");
     console.error(e);
   }
 }
-
-// Load model on start
-let session;
-async function loadModel() {
-  console.log("🔄 Loading ONNX model...");
-  try {
-    session = await ort.InferenceSession.create('./model/model_v2.onnx');
-    console.log("✅ Model loaded successfully!");
-  } catch (e) {
-    console.log("❌ Failed to load model:", e);
-  }
-}
-loadModel();
