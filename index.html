@@ -7,46 +7,18 @@
 </head>
 <body>
     <h1>Check your refrigerator. What can you create?</h1>
-    <div id="wrapper">
-        <div class="boxCont">
-            <input type="checkbox" value="4" class="checkbox">
-            <label>apple</label>
-        </div>
-    
-        <div class="boxCont">
-            <input type="checkbox" value="247" class="checkbox">
-            <label>pear</label>
-        </div>
-    
-        <div class="boxCont">
-            <input type="checkbox" value="77" class="checkbox">
-            <label>cherry</label>
-        </div>
 
-        <div class="boxCont">
-            <input type="checkbox" value="126" class="checkbox">
-            <label>fenugreek</label>
-        </div>
-
-        <div class="boxCont">
-            <input type="checkbox" value="302" class="checkbox">
-            <label>sake</label>
-        </div>
-
-        <div class="boxCont">
-            <input type="checkbox" value="327" class="checkbox">
-            <label>soy sauce</label>
-        </div>
-
-        <div class="boxCont">
-            <input type="checkbox" value="112" class="checkbox">
-            <label>cumin</label>
-        </div>
-    </div>
     <div style="padding-top:10px">
-        <button onClick="startInference()">What kind of cuisine can you make?</button>
+    <button onClick="startInference()">What kind of cuisine can you make?</button>
     </div>
-    <div id="result" style="margin-top: 20px; font-weight: bold;"></div> 
+
+    <div id="result" style="margin-top: 20px; font-size: 1.2em; color: green; font-weight: bold;"></div>
+
+    <input type="text" id="search" placeholder="Search ingredients..." style="width: 20%; padding: 8px; margin-top: 20px; margin-bottom: 10px;">
+    <button id="clearBtn" style="margin-top: 10px;">Clear all checkboxes</button>
+
+    <div id="wrapper"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
     <script src="app.js"></script>
 </body>
