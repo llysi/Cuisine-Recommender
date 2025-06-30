@@ -35,6 +35,24 @@ function renderIngredientList(list) {
       selectedIngredients[check.value] = check.checked ? 1 : 0;
     });
   });
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    // Reset all selected ingredients
+    selectedIngredients = {};
+  
+    // Reset ingredients array
+    for (let i = 0; i < ingredients.length; i++) {
+      ingredients[i] = 0;
+    }
+  
+    // Uncheck all currently visible checkboxes
+    const checks = [...document.querySelectorAll('.checkbox')];
+    checks.forEach(check => {
+      check.checked = false;
+    });
+  
+    console.log("✅ All checkboxes cleared!");
+  });
+  
 }
 
 const ingredients = Array(380).fill(0);
